@@ -35,7 +35,6 @@ public class ServidorUpload {
 					long tamanho = new File(caminho).length();
 					dosDados.writeLong(tamanho);
 					long offset = disDados.readLong();
-					dosDados.writeLong(tamanho);
 					byte[] buffer;
 					int tamanhoBuffer = 1024;
 					fis = new FileInputStream(caminho);
@@ -60,7 +59,7 @@ public class ServidorUpload {
 							upload.setRestante(2147483647);
 							System.out.println("Thread finalizada");
 							stop();
-						}
+						} 
 					};
 					Thread RTT = new Thread() {
 						public void run() {
@@ -101,7 +100,6 @@ public class ServidorUpload {
 							}
 						}
 					};
-
 					velocidade.start();
 					TrataMensagens.start();
 					RTT.start();

@@ -15,7 +15,7 @@ public class Cliente {
 	volatile JanelaDownload download;
 	Socket dados;
 	Socket mensagens;
-	InputStream is;
+	InputStream is; 
 	volatile long offset = 0;
 	volatile boolean pong;
 	Thread baixar = new Thread(){
@@ -39,7 +39,6 @@ public class Cliente {
 					dosDados.writeLong(offset);
 					FileOutputStream fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
-					is = dados.getInputStream();
 					byte[] buffer = new byte [10240];
 					int byteLido;
 					download.setNomeArquivo(new File(caminhoSalvar).getName());
@@ -103,12 +102,14 @@ public class Cliente {
 					TrataMensagens.start();
 					RTT.start();
 					velocidade.start();
+					is = dados.getInputStream();
 					while((byteLido = is.read(buffer))!=-1&&!this.isInterrupted()) {
 						bos.write(buffer,0,byteLido);
 						offset+=byteLido;
 						bos.flush();
 						download.setProgresso((int)(((double)offset/(double)tamanho)*100));
 					}
+					System.out.println(offset);
 					fos.close();
 					if(this.isInterrupted()) {
 					}else {
@@ -170,7 +171,6 @@ public class Cliente {
 					dosDados.writeLong(offset);
 					FileOutputStream fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
-					is = dados.getInputStream();
 					byte[] buffer = new byte [10240];
 					int byteLido;
 					download.setNomeArquivo(new File(caminhoSalvar).getName());
@@ -234,12 +234,14 @@ public class Cliente {
 					TrataMensagens.start();
 					RTT.start();
 					velocidade.start();
+					is = dados.getInputStream();
 					while((byteLido = is.read(buffer))!=-1&&!this.isInterrupted()) {
 						bos.write(buffer,0,byteLido);
 						offset+=byteLido;
 						bos.flush();
 						download.setProgresso((int)(((double)offset/(double)tamanho)*100));
 					}
+					System.out.println(offset);
 					fos.close();
 					if(this.isInterrupted()) {
 					}else {
@@ -253,7 +255,7 @@ public class Cliente {
 			}
 		}
 	};
-
+	
 	System.out.println("offset :"+offset+" tamanho arquivo: "+new File(caminhoSalvar).length());
 	baixar.start();
 	}

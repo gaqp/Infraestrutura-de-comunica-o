@@ -144,7 +144,7 @@ public class Janela1 extends JFrame {
 		local.setBounds(259, 297, 117, 23);
 		contentPane.add(local);
 		servidor = new Servidor(1000+new Random().nextInt(8999),this);	
-		this.setTitle("TRANSFER");
+		this.setTitle("TRANSFER"); 
 	}
 	public   void SetPortaIP(String ip, int porta) {
 		Porta.setText(porta+"");
