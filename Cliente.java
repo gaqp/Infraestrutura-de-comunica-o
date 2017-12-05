@@ -25,7 +25,7 @@ public class Cliente {
 				dados = new Socket(host,porta);
 				mensagens = new Socket(host, porta);
 				dados.setSoTimeout(10000);
-				mensagens.setSoTimeout(1000);
+				mensagens.setSoTimeout(10000);
 				DataOutputStream dosDados;
 				DataInputStream disDados;
 				dosDados = new DataOutputStream(dados.getOutputStream());
@@ -157,7 +157,7 @@ public class Cliente {
 				dados = new Socket(host,porta);
 				mensagens = new Socket(host, porta);
 				dados.setSoTimeout(10000);
-				mensagens.setSoTimeout(1000);
+				mensagens.setSoTimeout(10000);
 				DataOutputStream dosDados;
 				DataInputStream disDados;
 				dosDados = new DataOutputStream(dados.getOutputStream());

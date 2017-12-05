@@ -90,7 +90,7 @@ public class Janela1 extends JFrame {
 		
 		CaminhoSalvar = new JTextField();
 		CaminhoSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		CaminhoSalvar.setBounds(10, 202, 555, 38);
+		CaminhoSalvar.setBounds(10, 202, 644, 38);
 		contentPane.add(CaminhoSalvar);
 		CaminhoSalvar.setColumns(10);
 		
@@ -120,17 +120,6 @@ public class Janela1 extends JFrame {
 		portaDestino.setBounds(355, 356, 299, 20);
 		contentPane.add(portaDestino);
 		portaDestino.setColumns(10);
-		
-		JButton procurar = new JButton("Procurar");
-		procurar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				EscolherArquivo ea = new EscolherArquivo();
-				ea.setVisible(true);
-				ea.setJanela(janela);
-			}
-		});
-		procurar.setBounds(575, 211, 89, 23);
-		contentPane.add(procurar);
 		
 		JButton local = new JButton("Set Localhost");
 		local.addActionListener(new ActionListener() {
