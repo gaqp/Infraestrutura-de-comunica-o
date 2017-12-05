@@ -10,6 +10,7 @@ public class ServidorUpload {
 	private Socket mensagens;
 	private Socket dados;
 	private volatile long atual;
+	volatile boolean pong = false;
 	JanelaDownload upload = new JanelaDownload();
 	private Thread enviar = new Thread() {
 		public void run() {
@@ -19,7 +20,8 @@ public class ServidorUpload {
 			BufferedInputStream bis;
 			OutputStream os;
 			try {
-				
+				mensagens.setSoTimeout(10000);
+				dados.setSoTimeout(10000);
 				upload.setVisible(true);
 				upload.upload();
 				dosDados = new DataOutputStream (dados.getOutputStream());
@@ -60,7 +62,48 @@ public class ServidorUpload {
 							stop();
 						}
 					};
+					Thread RTT = new Thread() {
+						public void run() {
+							while(enviar.isAlive()) {
+								try {
+									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
+									dosMensagens.writeUTF("PING");
+									long tempo = System.currentTimeMillis();
+									while(!pong) {
+										yield();
+									}
+									long tempo2 = System.currentTimeMillis();
+									upload.setRTT(tempo2  - tempo);
+									pong = false;
+									System.out.println("Servidor RODOU PING");
+								}catch(Exception e) {
+									
+								}
+							}
+							stop();
+						}
+					};
+					Thread TrataMensagens = new Thread() {
+						public void run() {
+							try {
+								while(enviar.isAlive()) {
+									String mensagem = new DataInputStream(mensagens.getInputStream()).readUTF();
+									if(mensagem.equals("PING")) {
+										new DataOutputStream(mensagens.getOutputStream()).writeUTF("PONG");
+									}else {
+										pong = true;
+									}
+								}
+								stop();
+							}catch(Exception e) {
+								
+							}
+						}
+					};
+
 					velocidade.start();
+					TrataMensagens.start();
+					RTT.start();
 					while(atual!=tamanho) {
 						if((tamanho-atual)>=tamanhoBuffer) {
 							atual+=tamanhoBuffer;
@@ -78,6 +121,7 @@ public class ServidorUpload {
 					fis.close();	
 					upload.terminado();
 					velocidade.stop();
+					upload.dispose();
 					this.stop();
 				}
 			}catch(Exception e) {

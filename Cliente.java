@@ -17,23 +17,25 @@ public class Cliente {
 	Socket mensagens;
 	InputStream is;
 	volatile long offset = 0;
+	volatile boolean pong;
 	Thread baixar = new Thread(){
 		public void run() {
 			try {
+				pong = false;
 				dados = new Socket(host,porta);
 				mensagens = new Socket(host, porta);
 				dados.setSoTimeout(10000);
 				mensagens.setSoTimeout(1000);
 				DataOutputStream dosDados;
-				DataInputStream disMensagens;
+				DataInputStream disDados;
 				dosDados = new DataOutputStream(dados.getOutputStream());
-				disMensagens = new DataInputStream(dados.getInputStream());
+				disDados = new DataInputStream(dados.getInputStream());
 				dosDados.writeUTF(caminho);
-				if(disMensagens.readInt()==0) {
+				if(disDados.readInt()==0) {
 					System.out.println("Arquivo não encontrado");
 					this.interrupt();
 				}else {
-					long tamanho = disMensagens.readLong();
+					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
 					FileOutputStream fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -54,13 +56,51 @@ public class Cliente {
 								long taxa = medida2-medida1;
 								download.setRestante((int)((double)((tamanho-medida2)/(double)taxa)));
 								download.setTaxa(taxa/1000000);
-								System.out.println("Tempo restante atualizado");
 							}
 							download.setRestante(2147483647);
-							System.out.println("Thread finalizada");
 							stop();
 						}
 					};
+					Thread RTT = new Thread() {
+						public void run() {
+							while(baixar.isAlive()) {
+								try {
+									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
+									dosMensagens.writeUTF("PING");
+									long tempo = System.currentTimeMillis();
+									while(!pong) {
+										yield();
+									}
+									long tempo2 = System.currentTimeMillis();
+									download.setRTT(tempo2  - tempo);
+									pong = false;
+									System.out.println("Cliente RODOU PING");
+								}catch(Exception e) {
+									
+								}
+							}
+							stop();
+						}
+					};
+					Thread TrataMensagens = new Thread() {
+						public void run() {
+							try {
+								while(baixar.isAlive()) {
+									String mensagem = new DataInputStream(mensagens.getInputStream()).readUTF();
+									if(mensagem.equals("PING")) {
+										new DataOutputStream(mensagens.getOutputStream()).writeUTF("PONG");
+									}else {
+										pong = true;
+									}
+								}
+								stop();
+							}catch(Exception e) {
+								
+							}
+						}
+					};
+					TrataMensagens.start();
+					RTT.start();
 					velocidade.start();
 					while((byteLido = is.read(buffer))!=-1&&!this.isInterrupted()) {
 						bos.write(buffer,0,byteLido);
@@ -81,7 +121,6 @@ public class Cliente {
 			}
 		}
 	};
-a
 	public Cliente(String host, int porta, String caminho, String caminhoSalvar) {
 		this.host = host;
 		this.porta = porta;
@@ -112,20 +151,21 @@ a
 	baixar = new Thread(){
 		public void run() {
 			try {
+				pong = false;
 				dados = new Socket(host,porta);
 				mensagens = new Socket(host, porta);
 				dados.setSoTimeout(10000);
 				mensagens.setSoTimeout(1000);
 				DataOutputStream dosDados;
-				DataInputStream disMensagens;
+				DataInputStream disDados;
 				dosDados = new DataOutputStream(dados.getOutputStream());
-				disMensagens = new DataInputStream(dados.getInputStream());
+				disDados = new DataInputStream(dados.getInputStream());
 				dosDados.writeUTF(caminho);
-				if(disMensagens.readInt()==0) {
+				if(disDados.readInt()==0) {
 					System.out.println("Arquivo não encontrado");
 					this.interrupt();
 				}else {
-					long tamanho = disMensagens.readLong();
+					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
 					FileOutputStream fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -146,13 +186,49 @@ a
 								long taxa = medida2-medida1;
 								download.setRestante((int)((double)((tamanho-medida2)/(double)taxa)));
 								download.setTaxa(taxa/1000000);
-								System.out.println("Tempo restante atualizado");
 							}
 							download.setRestante(2147483647);
-							System.out.println("Thread finalizada");
 							stop();
 						}
 					};
+					Thread RTT = new Thread() {
+						public void run() {
+							while(baixar.isAlive()) {
+								try {
+									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
+									dosMensagens.writeUTF("PING");
+									long tempo = System.currentTimeMillis();
+									while(!pong) {
+										yield();
+									}
+									long tempo2 = System.currentTimeMillis();
+									download.setRTT(tempo2  - tempo);
+								}catch(Exception e) {
+									
+								}
+							}
+							stop();
+						}
+					};
+					Thread TrataMensagens = new Thread() {
+						public void run() {
+							try {
+								while(baixar.isAlive()) {
+									String mensagem = new DataInputStream(mensagens.getInputStream()).readUTF();
+									if(mensagem.equals("PING")) {
+										new DataOutputStream(mensagens.getOutputStream()).writeUTF("PONG");
+									}else {
+										pong = true;
+									}
+								}
+								stop();
+							}catch(Exception e) {
+								
+							}
+						}
+					};
+					TrataMensagens.start();
+					RTT.start();
 					velocidade.start();
 					while((byteLido = is.read(buffer))!=-1&&!this.isInterrupted()) {
 						bos.write(buffer,0,byteLido);
@@ -179,7 +255,7 @@ a
 	}
 	public void cancelar() {
 		
-		baixar.stop();
+		baixar.interrupt();
 		download.dispose();
 		if(new File(caminhoSalvar).exists()) {
 			new File(caminhoSalvar).delete();

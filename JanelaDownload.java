@@ -119,6 +119,7 @@ public class JanelaDownload extends JFrame {
 		parte = new JLabel("");
 		parte.setBounds(10, 9, 305, 14);
 		contentPane.add(parte);
+		this.setTitle("Baixando Arquivo");
 	}
 	public  void setRTT(long ping) {
 		RTT.setText("RTT: "+ ping+"ms");
@@ -159,6 +160,7 @@ public class JanelaDownload extends JFrame {
 	public void upload() {
 		cancelar.setVisible(false);
 		pausar.setVisible(false);
+		this.setTitle("Enviando Arquivo");
 	}
 	public void setNomeArquivo(String nome) {
 		this.parte.setText("Arquivo : "+nome);
