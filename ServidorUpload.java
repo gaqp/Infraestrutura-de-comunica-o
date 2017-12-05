@@ -68,16 +68,17 @@ public class ServidorUpload {
 								try {
 									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
 									dosMensagens.writeUTF("PING");
-									long tempo = System.currentTimeMillis();
+									long tempo = System.nanoTime();
 									while(!pong) {
 										yield();
 									}
-									long tempo2 = System.currentTimeMillis();
-									upload.setRTT(tempo2  - tempo);
+									long tempo2 = System.nanoTime();
+									upload.setRTT(((double)(tempo2  - tempo))/1000000);
 									pong = false;
 									System.out.println("Servidor RODOU PING");
+									sleep(100);
 								}catch(Exception e) {
-									
+									System.out.println(e);
 								}
 							}
 							stop();

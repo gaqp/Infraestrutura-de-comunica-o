@@ -67,16 +67,17 @@ public class Cliente {
 								try {
 									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
 									dosMensagens.writeUTF("PING");
-									long tempo = System.currentTimeMillis();
+									long tempo = System.nanoTime();
 									while(!pong) {
 										yield();
 									}
-									long tempo2 = System.currentTimeMillis();
-									download.setRTT(tempo2  - tempo);
+									long tempo2 = System.nanoTime();
+									download.setRTT(((double)(tempo2  - tempo))/1000000);
 									pong = false;
 									System.out.println("Cliente RODOU PING");
+									sleep(100);
 								}catch(Exception e) {
-									
+									System.out.println(e);
 								}
 							}
 							stop();
@@ -95,7 +96,7 @@ public class Cliente {
 								}
 								stop();
 							}catch(Exception e) {
-								
+								System.out.println(e);
 							}
 						}
 					};
@@ -197,14 +198,17 @@ public class Cliente {
 								try {
 									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
 									dosMensagens.writeUTF("PING");
-									long tempo = System.currentTimeMillis();
+									long tempo = System.nanoTime();
 									while(!pong) {
 										yield();
 									}
-									long tempo2 = System.currentTimeMillis();
-									download.setRTT(tempo2  - tempo);
+									long tempo2 = System.nanoTime();
+									download.setRTT(((double)(tempo2  - tempo))/1000000);
+									pong = false;
+									System.out.println("Cliente RODOU PING");
+									sleep(100);
 								}catch(Exception e) {
-									
+									System.out.println(e);
 								}
 							}
 							stop();
@@ -223,7 +227,7 @@ public class Cliente {
 								}
 								stop();
 							}catch(Exception e) {
-								
+								System.out.println(e);
 							}
 						}
 					};
@@ -253,8 +257,9 @@ public class Cliente {
 	System.out.println("offset :"+offset+" tamanho arquivo: "+new File(caminhoSalvar).length());
 	baixar.start();
 	}
-	public void cancelar() {
-		
+	public void cancelar() throws IOException {
+		dados.close();
+		mensagens.close();
 		baixar.interrupt();
 		download.dispose();
 		if(new File(caminhoSalvar).exists()) {

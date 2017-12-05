@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.awt.event.ActionEvent;
 
 public class JanelaDownload extends JFrame {
@@ -66,7 +68,7 @@ public class JanelaDownload extends JFrame {
 						public void run() {
 							try {
 								pausar.setEnabled(false);
-								sleep(250);
+								sleep(500);
 								pausar.setEnabled(true);
 
 							} catch (InterruptedException e) {
@@ -102,7 +104,11 @@ public class JanelaDownload extends JFrame {
 		cancelar = new JButton("Cancelar");
 		cancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cancelar();	
+				try {
+					cancelar();
+				} catch (IOException e1) {
+					
+				}	
 			}
 		});
 		cancelar.setBounds(208, 59, 89, 23);
@@ -121,8 +127,8 @@ public class JanelaDownload extends JFrame {
 		contentPane.add(parte);
 		this.setTitle("Baixando Arquivo");
 	}
-	public  void setRTT(long ping) {
-		RTT.setText("RTT: "+ ping+"ms");
+	public  void setRTT(double ping) {
+		RTT.setText("RTT: "+ String.format("%.2f", ping) +" ms"); 
 	}
 	public  void setTaxa(long taxa) {
 			Taxa.setText("Taxa: "+taxa+" MBps");	
@@ -140,7 +146,7 @@ public class JanelaDownload extends JFrame {
 	public void continuar() {
 		cliente.continuar();
 	}
-	public void cancelar() {
+	public void cancelar() throws IOException {
 		cliente.cancelar();
 	}
 	public void setRestante(int tempo) {
