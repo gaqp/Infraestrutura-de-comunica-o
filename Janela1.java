@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -23,6 +25,7 @@ public class Janela1 extends JFrame {
 	private  JTextField CaminhoSalvar;
 	private  Servidor servidor;
 	private Janela1 janela;
+	public JOptionPane dialogo;
 	/**
 	 * Launch the application.
 	 */
@@ -97,7 +100,8 @@ public class Janela1 extends JFrame {
 		JButton Baixar = new JButton("Baixar");
 		Baixar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new Cliente(ipDestino(),portaDestino(),caminhoServidor(),caminhoSalvar());
+				Cliente cliente = new Cliente(ipDestino(),portaDestino(),caminhoServidor(),caminhoSalvar());
+				setJanelaCliente(cliente);
 			}
 		});
 		Baixar.setBounds(273, 405, 89, 23);
@@ -134,6 +138,7 @@ public class Janela1 extends JFrame {
 		contentPane.add(local);
 		servidor = new Servidor(1000+new Random().nextInt(8999),this);	
 		this.setTitle("TRANSFER"); 
+		dialogo = new JOptionPane();
 	}
 	public   void SetPortaIP(String ip, int porta) {
 		Porta.setText(porta+"");
@@ -161,5 +166,11 @@ public class Janela1 extends JFrame {
 	}
 	public  void setSalvar(String caminho) {
 		this.CaminhoSalvar.setText(caminho);
+	}
+	public void showDialogo(String dialogo) {
+		this.dialogo.showMessageDialog(this, dialogo);
+	}
+	public void setJanelaCliente(Cliente cliente) {
+		cliente.setJanela(this);
 	}
 }

@@ -1,4 +1,6 @@
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,6 +15,7 @@ public class Cliente {
 	volatile String caminho;
 	volatile String caminhoSalvar;
 	volatile JanelaDownload download;
+	Janela1 janela;
 	Socket dados;
 	Socket mensagens;
 	InputStream is; 
@@ -22,8 +25,22 @@ public class Cliente {
 		public void run() {
 			try {
 				pong = false;
-				dados = new Socket(host,porta);
-				mensagens = new Socket(host, porta);
+				try {
+					dados = new Socket(host,porta);
+					mensagens = new Socket(host, porta);
+				}catch(UnknownHostException e) {
+					janela.showDialogo("Servidor não encontrado");
+					download.dispose();
+					this.stop();
+				}catch(ConnectException e) {
+					janela.showDialogo("Não foi possivel conectar");
+					download.dispose();
+					this.stop();
+				}catch(IllegalArgumentException e) {
+					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
+					download.dispose();
+					this.stop();
+				}
 				dados.setSoTimeout(10000);
 				mensagens.setSoTimeout(10000);
 				DataOutputStream dosDados;
@@ -32,8 +49,9 @@ public class Cliente {
 				disDados = new DataInputStream(dados.getInputStream());
 				dosDados.writeUTF(caminho);
 				if(disDados.readInt()==0) {
-					System.out.println("Arquivo não encontrado");
-					this.interrupt();
+					janela.showDialogo("Arquivo não encontrado");
+					download.dispose();
+					this.stop();
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
@@ -154,8 +172,22 @@ public class Cliente {
 		public void run() {
 			try {
 				pong = false;
-				dados = new Socket(host,porta);
-				mensagens = new Socket(host, porta);
+				try {
+					dados = new Socket(host,porta);
+					mensagens = new Socket(host, porta);
+				}catch(UnknownHostException e) {
+					janela.showDialogo("Servidor não encontrado");
+					download.dispose();
+					this.stop();
+				}catch(ConnectException e) {
+					janela.showDialogo("Não foi possivel conectar");
+					download.dispose();
+					this.stop();
+				}catch(IllegalArgumentException e) {
+					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
+					download.dispose();
+					this.stop();
+				}
 				dados.setSoTimeout(10000);
 				mensagens.setSoTimeout(10000);
 				DataOutputStream dosDados;
@@ -164,8 +196,9 @@ public class Cliente {
 				disDados = new DataInputStream(dados.getInputStream());
 				dosDados.writeUTF(caminho);
 				if(disDados.readInt()==0) {
-					System.out.println("Arquivo não encontrado");
-					this.interrupt();
+					janela.showDialogo("Arquivo não encontrado");
+					download.dispose();
+					this.stop();
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
@@ -259,13 +292,23 @@ public class Cliente {
 	System.out.println("offset :"+offset+" tamanho arquivo: "+new File(caminhoSalvar).length());
 	baixar.start();
 	}
-	public void cancelar() throws IOException {
-		dados.close();
-		mensagens.close();
-		baixar.interrupt();
-		download.dispose();
-		if(new File(caminhoSalvar).exists()) {
-			new File(caminhoSalvar).delete();
+	public void cancelar() {
+		try {
+			dados.close();
+			mensagens.close();
+			baixar.interrupt();
+			download.dispose();
+			if(new File(caminhoSalvar).exists()) {
+				new File(caminhoSalvar).delete();
+			}
+		}catch(Exception e) {
+			download.dispose();
+			if(new File(caminhoSalvar).exists()) {
+				new File(caminhoSalvar).delete();
+			}
 		}
+	}
+	public void setJanela(Janela1 janela) {
+		this.janela = janela;
 	}
 }

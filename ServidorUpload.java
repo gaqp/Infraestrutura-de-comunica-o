@@ -29,7 +29,8 @@ public class ServidorUpload {
 				String caminho = disDados.readUTF();
 				if(!new File(caminho).exists()) {
 					dosDados.writeInt(0);
-					this.interrupt();
+					upload.dispose();
+					this.stop();
 				}else {
 					dosDados.writeInt(1);
 					long tamanho = new File(caminho).length();
