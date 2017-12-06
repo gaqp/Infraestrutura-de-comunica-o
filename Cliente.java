@@ -215,7 +215,7 @@ public class Cliente {
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
-					FileOutputStream fos = new FileOutputStream(caminhoSalvar,true);
+					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
 					byte[] buffer = new byte [10240];
 					int byteLido;
@@ -321,14 +321,12 @@ public class Cliente {
 			baixar.interrupt();
 			fos.close();
 			download.dispose();
-			if(new File(caminhoSalvar).exists()) {
-				new File(caminhoSalvar).delete();
-			}
+			new File(caminhoSalvar).delete();
+			boolean ping = new File(caminhoSalvar).exists();
+			System.out.println("Arquivo apagado "+ping);
 		}catch(Exception e) {
 			download.dispose();
-			if(new File(caminhoSalvar).exists()) {
-				new File(caminhoSalvar).delete();
-			}
+			new File(caminhoSalvar).delete();
 		}
 	}
 	public void setJanela(Janela1 janela) {
