@@ -22,6 +22,7 @@ public class Cliente {
 	InputStream is; 
 	volatile long offset = 0;
 	volatile boolean pong;
+	FileOutputStream fos;
 	Thread baixar = new Thread(){
 		public void run() {
 			try {
@@ -56,7 +57,7 @@ public class Cliente {
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
-					FileOutputStream fos = new FileOutputStream(caminhoSalvar,true);
+					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
 					byte[] buffer = new byte [10240];
 					int byteLido;
@@ -189,9 +190,11 @@ public class Cliente {
 					mensagens = new Socket(host, porta);
 				}catch(UnknownHostException e) {
 					janela.showDialogo("Servidor não encontrado");
+					download.trocar();
 					this.stop();
 				}catch(ConnectException e) {
 					janela.showDialogo("Não foi possivel conectar");
+					download.trocar();
 					this.stop();
 				}catch(IllegalArgumentException e) {
 					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
@@ -316,6 +319,7 @@ public class Cliente {
 			dados.close();
 			mensagens.close();
 			baixar.interrupt();
+			fos.close();
 			download.dispose();
 			if(new File(caminhoSalvar).exists()) {
 				new File(caminhoSalvar).delete();
