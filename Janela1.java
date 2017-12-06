@@ -124,18 +124,6 @@ public class Janela1 extends JFrame {
 		portaDestino.setBounds(355, 356, 299, 20);
 		contentPane.add(portaDestino);
 		portaDestino.setColumns(10);
-		
-		JButton local = new JButton("Set Localhost");
-		local.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ipDestino.setText(servidor.getIP());
-				portaDestino.setText(servidor.getPorta()+"");
-				CaminhoServidor.setText("C:\\Users\\Gabriel Alves\\Pictures\\Saved Pictures\\1840Megas.7z.001");
-				CaminhoSalvar.setText("C:\\Users\\Gabriel Alves\\Pictures\\Saved Pictures\\1840Megas.7z.002");
-			}
-		});
-		local.setBounds(259, 297, 117, 23);
-		contentPane.add(local);
 		servidor = new Servidor(1000+new Random().nextInt(8999),this);	
 		this.setTitle("TRANSFER"); 
 		dialogo = new JOptionPane();

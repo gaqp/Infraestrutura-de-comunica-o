@@ -58,7 +58,6 @@ public class ServidorUpload {
 								upload.setTaxa(taxa/1000000);
 							}
 							upload.setRestante(2147483647);
-							System.out.println("Thread finalizada");
 							stop();
 						} 
 					};

@@ -1,6 +1,7 @@
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Random;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -75,6 +76,12 @@ public class Cliente {
 								download.setTaxa(taxa/1000000);
 							}
 							download.setRestante(2147483647);
+							try {
+								fos.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							stop();
 						}
 					};
@@ -155,7 +162,7 @@ public class Cliente {
 		this.caminhoSalvar = caminhoSalvar;
 		if(new File(caminhoSalvar).exists()) {
 			new File(caminhoSalvar).delete();
-		}
+			}
 		download  = new JanelaDownload();
 		download.setCliente(this);
 		download.setVisible(true);
@@ -225,6 +232,12 @@ public class Cliente {
 								download.setTaxa(taxa/1000000);
 							}
 							download.setRestante(2147483647);
+							try {
+								fos.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							stop();
 						}
 					};
@@ -296,7 +309,6 @@ public class Cliente {
 		}
 	};
 	
-	System.out.println("offset :"+offset+" tamanho arquivo: "+new File(caminhoSalvar).length());
 	baixar.start();
 	}
 	public void cancelar() {
@@ -319,7 +331,7 @@ public class Cliente {
 		this.janela = janela;
 	}
 	public void parar() {
-		baixar.stop();
+		baixar.interrupt();
 		download.dispose();
 	}
 }
