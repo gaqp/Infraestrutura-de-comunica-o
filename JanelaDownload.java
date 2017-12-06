@@ -18,6 +18,7 @@ public class JanelaDownload extends JFrame {
 	private  JProgressBar Progresso;
 	private  JLabel Taxa;
 	private Cliente cliente;
+	private ServidorUpload upload;
 	private JLabel restante;
 	private JButton cancelar;
 	private JButton pausar;
@@ -111,7 +112,7 @@ public class JanelaDownload extends JFrame {
 				}	
 			}
 		});
-		cancelar.setBounds(208, 59, 89, 23);
+		cancelar.setBounds(109, 59, 89, 23);
 		contentPane.add(cancelar);
 		
 		Taxa = new JLabel("Velocidade: ");
@@ -125,7 +126,24 @@ public class JanelaDownload extends JFrame {
 		parte = new JLabel("");
 		parte.setBounds(10, 9, 305, 14);
 		contentPane.add(parte);
+		
+		JButton fechar = new JButton("Fechar");
+		fechar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cliente!=null) {
+					cliente.parar();
+					dispose();
+				}
+				if(upload!=null) {
+					upload.parar();
+					dispose();
+				}
+			}
+		});
+		fechar.setBounds(220, 59, 89, 23);
+		contentPane.add(fechar);
 		this.setTitle("Baixando Arquivo");
+		
 	}
 	public  void setRTT(double ping) {
 		RTT.setText("RTT: "+ String.format("%.2f", ping) +" ms"); 
@@ -175,5 +193,8 @@ public class JanelaDownload extends JFrame {
 		if(pausar.getText().equals("Pausar")) {
 			pausar.doClick();
 		}
+	}
+	public void setUpload(ServidorUpload upload) {
+		this.upload = upload;
 	}
 }

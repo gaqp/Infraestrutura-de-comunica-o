@@ -309,4 +309,8 @@ public class Cliente {
 	public void setJanela(Janela1 janela) {
 		this.janela = janela;
 	}
+	public void parar() {
+		baixar.stop();
+		download.dispose();
+	}
 }

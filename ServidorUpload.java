@@ -134,9 +134,14 @@ public class ServidorUpload {
 		public ServidorUpload(Socket dados, Socket mensagens) {
 		this.mensagens = mensagens;
 		this.dados = dados;
+		upload.setUpload(this);
 		conectar();
 	}
 	void conectar() {
 		enviar.start();
+	}
+	void parar() {
+		upload.dispose();
+		enviar.stop();
 	}
 } 	
