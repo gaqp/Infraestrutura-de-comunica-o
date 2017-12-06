@@ -177,11 +177,9 @@ public class Cliente {
 					mensagens = new Socket(host, porta);
 				}catch(UnknownHostException e) {
 					janela.showDialogo("Servidor não encontrado");
-					download.dispose();
 					this.stop();
 				}catch(ConnectException e) {
 					janela.showDialogo("Não foi possivel conectar");
-					download.dispose();
 					this.stop();
 				}catch(IllegalArgumentException e) {
 					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
