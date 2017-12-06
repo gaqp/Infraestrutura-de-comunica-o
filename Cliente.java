@@ -95,6 +95,10 @@ public class Cliente {
 									sleep(100);
 								}catch(Exception e) {
 									System.out.println(e);
+									try {
+										fos.close();
+									} catch (IOException e1) {
+									}
 								}
 							}
 							stop();
@@ -141,6 +145,7 @@ public class Cliente {
 			}
 		}
 	};
+ 
 	public Cliente(String host, int porta, String caminho, String caminhoSalvar) {
 		this.host = host;
 		this.porta = porta;
@@ -240,6 +245,10 @@ public class Cliente {
 									sleep(100);
 								}catch(Exception e) {
 									System.out.println(e);
+									try {
+										fos.close();
+									} catch (IOException e1) {
+									}
 								}
 							}
 							stop();
