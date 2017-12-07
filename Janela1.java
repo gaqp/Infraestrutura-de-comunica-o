@@ -93,7 +93,7 @@ public class Janela1 extends JFrame {
 		
 		CaminhoSalvar = new JTextField();
 		CaminhoSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		CaminhoSalvar.setBounds(10, 202, 644, 38);
+		CaminhoSalvar.setBounds(10, 202, 511, 38);
 		contentPane.add(CaminhoSalvar);
 		CaminhoSalvar.setColumns(10);
 		
@@ -124,6 +124,23 @@ public class Janela1 extends JFrame {
 		portaDestino.setBounds(355, 356, 299, 20);
 		contentPane.add(portaDestino);
 		portaDestino.setColumns(10);
+		
+		JButton btnProcurar = new JButton("Procurar");
+		btnProcurar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser seletor = new JFileChooser();
+				seletor.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				int retorno = seletor.showSaveDialog(seletor);
+				if(retorno == JFileChooser.APPROVE_OPTION) {
+					String caminho = seletor.getSelectedFile().getPath();
+					CaminhoSalvar.setText(caminho);
+				}else {
+					showDialogo("Caminho não selecionado");
+				}
+			}
+		});
+		btnProcurar.setBounds(540, 211, 89, 23);
+		contentPane.add(btnProcurar);
 		servidor = new Servidor(1000+new Random().nextInt(8999),this);	
 		this.setTitle("TRANSFER"); 
 		dialogo = new JOptionPane();
