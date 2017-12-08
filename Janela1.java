@@ -11,8 +11,11 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
 import javax.swing.JFileChooser;
+import java.awt.Choice;
 
 public class Janela1 extends JFrame {
 
@@ -25,7 +28,10 @@ public class Janela1 extends JFrame {
 	private  JTextField CaminhoSalvar;
 	private  Servidor servidor;
 	private Janela1 janela;
+	private String pastaCompartilhada;
 	public JOptionPane dialogo;
+	private JLabel pastaLabel;
+	public String pastaCompartilhadaCaminho;
 	/**
 	 * Launch the application.
 	 */
@@ -77,18 +83,18 @@ public class Janela1 extends JFrame {
 		
 		CaminhoServidor = new JTextField();
 		CaminhoServidor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		CaminhoServidor.setBounds(10, 100, 644, 38);
+		CaminhoServidor.setBounds(10, 50, 644, 38);
 		contentPane.add(CaminhoServidor);
 		CaminhoServidor.setColumns(10);
 		
 		JLabel lblDigiteOCaminho = new JLabel("Digite o  caminho do arquivo a ser baixado do servidor");
 		lblDigiteOCaminho.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDigiteOCaminho.setBounds(157, 61, 354, 28);
+		lblDigiteOCaminho.setBounds(10, 11, 501, 28);
 		contentPane.add(lblDigiteOCaminho);
 		
-		JLabel lblDigiteOCaminho_1 = new JLabel("Digite o caminho para salvar o arquivo");
+		JLabel lblDigiteOCaminho_1 = new JLabel("Digite o caminho para salvar o arquivo ou procure o caminho");
 		lblDigiteOCaminho_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDigiteOCaminho_1.setBounds(197, 149, 261, 54);
+		lblDigiteOCaminho_1.setBounds(10, 165, 448, 38);
 		contentPane.add(lblDigiteOCaminho_1);
 		
 		CaminhoSalvar = new JTextField();
@@ -100,8 +106,18 @@ public class Janela1 extends JFrame {
 		JButton Baixar = new JButton("Baixar");
 		Baixar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Cliente cliente = new Cliente(ipDestino(),portaDestino(),caminhoServidor(),caminhoSalvar());
-				setJanelaCliente(cliente);
+				if(caminhoSalvar().equals("")||caminhoSalvar().equals(null)||caminhoServidor().equals(null)||caminhoServidor().equals("")) {
+					showDialogo("O caminho não pode ser vazio");
+				}else {
+					try {
+						Paths.get(CaminhoSalvar.getText());
+						Cliente cliente = new Cliente(ipDestino(),portaDestino(),caminhoServidor(),caminhoSalvar());
+						setJanelaCliente(cliente);	
+					}catch(IllegalArgumentException e) {
+						showDialogo("Erro"+e);
+					}
+					
+				}
 			}
 		});
 		Baixar.setBounds(273, 405, 89, 23);
@@ -141,6 +157,26 @@ public class Janela1 extends JFrame {
 		});
 		btnProcurar.setBounds(540, 211, 89, 23);
 		contentPane.add(btnProcurar);
+		
+		JButton btnCompartilharPasta = new JButton("Compartilhar pasta");
+		btnCompartilharPasta.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser seletor = new JFileChooser();
+				seletor.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int retorno = seletor.showSaveDialog(seletor);
+				if(retorno == JFileChooser.APPROVE_OPTION) {
+					String caminho = seletor.getSelectedFile().getPath();
+					setPasta(caminho);
+					pastaCompartilhadaCaminho = caminho;
+				}
+			}
+		});
+		btnCompartilharPasta.setBounds(520, 297, 144, 23);
+		contentPane.add(btnCompartilharPasta);
+		
+		pastaLabel = new JLabel("Pasta Compartilhada: ");
+		pastaLabel.setBounds(10, 301, 511, 14);
+		contentPane.add(pastaLabel);
 		servidor = new Servidor(1000+new Random().nextInt(8999),this);	
 		this.setTitle("TRANSFER"); 
 		dialogo = new JOptionPane();
@@ -177,5 +213,9 @@ public class Janela1 extends JFrame {
 	}
 	public void setJanelaCliente(Cliente cliente) {
 		cliente.setJanela(this);
+	}
+	public void setPasta(String caminho) {
+		this.pastaCompartilhada = caminho;
+		pastaLabel.setText("Pasta Compartilhada: "+ pastaCompartilhada);
 	}
 }

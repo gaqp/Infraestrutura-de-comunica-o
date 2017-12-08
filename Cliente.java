@@ -38,7 +38,7 @@ public class Cliente {
 					download.dispose();
 					this.stop();
 				}catch(IllegalArgumentException e) {
-					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
+					janela.showDialogo("Argumento inválido, porta está errada");
 					download.dispose();
 					this.stop();
 				}
