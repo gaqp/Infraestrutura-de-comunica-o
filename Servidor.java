@@ -1,6 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,7 +30,11 @@ public class Servidor {
 													String caminho = janela.pastaCompartilhadaCaminho;
 													if(!caminho.equals("")) {
 														dos.writeInt(1);
-														File [] arquivos = new File(caminho).listFiles();
+														File [] arquivos = new File(caminho).listFiles(new FileFilter() {
+															public boolean accept(File caminho) {
+																return caminho.isFile();
+															}
+														});
 														dos.writeInt(arquivos.length);
 														for(int i = 0;i<arquivos.length;i++) {
 															dos.writeUTF(arquivos[i].getAbsolutePath());
