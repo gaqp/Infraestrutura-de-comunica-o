@@ -1,4 +1,6 @@
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,13 +20,30 @@ public class Servidor {
 							while (true) {
 								try {
 									Socket socket = servidor.accept();
+									DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 									if(new DataInputStream(socket.getInputStream()).readInt()==1) {
 										cliente(socket);
 									}else {
-										System.out.println("arquivos solicitados");
+												try { 
+													System.out.println("arquivos solicitados");
+													String caminho = janela.pastaCompartilhadaCaminho;
+													if(!caminho.equals("")) {
+														dos.writeInt(1);
+														File [] arquivos = new File(caminho).listFiles();
+														dos.writeInt(arquivos.length);
+														for(int i = 0;i<arquivos.length;i++) {
+															dos.writeUTF(arquivos[i].getAbsolutePath());
+														}
+													}else {
+														dos.writeInt(0);
+													}
+												}catch(Exception e) {
+													System.out.println("Erro ao tentar compartilhar pasta "+e);
+												}
 									}
 								} catch (Exception e) {
 									System.out.println("Erro ao conectar cliente: " + e);
+									e.printStackTrace();
 								}
 							}
 						}

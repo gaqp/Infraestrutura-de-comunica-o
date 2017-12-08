@@ -122,14 +122,34 @@ public class Cliente {
 			download.setVisible(true);
 			baixar.start();
 		}else {
-			try {
-				Socket dados = new Socket(host, porta);
-				new DataOutputStream(dados.getOutputStream()).writeInt(0);
-			} catch (UnknownHostException e) {
-				janela.showDialogo("Host não encontrado");
-			} catch (IOException e) {
-				janela.showDialogo("Erro de I/O");
-			}
+			new Thread() {
+				public void run() {
+					try {
+						Socket dados = new Socket(host, porta);
+						new DataOutputStream(dados.getOutputStream()).writeInt(0);
+						DataInputStream entrada = new DataInputStream(dados.getInputStream());
+						if(entrada.readInt()==0) {
+							
+						}else {
+							int tamanho = entrada.readInt();
+							System.out.println("tamanho "+tamanho);
+							String [] arquivos = new String [tamanho];
+							for(int i = 1;i<tamanho;i++) {
+								arquivos[i] = entrada.readUTF();
+							}
+							janela.setLista(arquivos);
+							System.out.println("Finalizado");
+							stop();
+						}
+					} catch (UnknownHostException e) {
+						janela.showDialogo("Host não encontrado");
+						stop();
+					} catch (IOException e) {
+						janela.showDialogo("Erro de I/O");
+						stop();
+					}
+				}
+			}.start();
 		}
 	}
 	public void pausar() {

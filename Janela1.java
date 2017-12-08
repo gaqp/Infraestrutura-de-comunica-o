@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
 import javax.swing.JFileChooser;
 import java.awt.Choice;
+import javax.swing.JComboBox;
 
 public class Janela1 extends JFrame {
 
@@ -24,13 +25,13 @@ public class Janela1 extends JFrame {
 	private JLabel Porta;
 	private JTextField portaDestino;
 	private JTextField ipDestino;
-	private JTextField CaminhoServidor;
 	private JTextField CaminhoSalvar;
 	private Servidor servidor;
 	private Janela1 janela;
 	public JOptionPane dialogo;
 	private JLabel pastaLabel;
 	public String pastaCompartilhadaCaminho = "";
+	private JComboBox CaminhoServidor;
 
 	/**
 	 * Launch the application.
@@ -81,12 +82,6 @@ public class Janela1 extends JFrame {
 		Porta.setBounds(423, 457, 188, 38);
 		contentPane.add(Porta);
 
-		CaminhoServidor = new JTextField();
-		CaminhoServidor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		CaminhoServidor.setBounds(10, 50, 511, 38);
-		contentPane.add(CaminhoServidor);
-		CaminhoServidor.setColumns(10);
-
 		JLabel lblDigiteOCaminho = new JLabel("Digite o  caminho do arquivo a ser baixado do servidor");
 		lblDigiteOCaminho.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblDigiteOCaminho.setBounds(10, 11, 501, 28);
@@ -112,7 +107,7 @@ public class Janela1 extends JFrame {
 				} else {
 					try {
 						Paths.get(CaminhoSalvar.getText());
-						Cliente cliente = new Cliente(ipDestino(), portaDestino(), caminhoServidor(), caminhoSalvar(),1);
+						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),1);
 						setJanelaCliente(cliente);
 					} catch (IllegalArgumentException e) {
 						showDialogo("Erro" + e);
@@ -190,14 +185,29 @@ public class Janela1 extends JFrame {
 		JButton btnReceberLista = new JButton("Receber lista");
 		btnReceberLista.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Cliente cliente = new Cliente(ipDestino(), portaDestino(), caminhoServidor(), caminhoSalvar(),0);
+				if(!ipDestino().equals("")) {
+					try {
+						int teste= Integer.parseInt(portaDestino());
+						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),0);
+						setJanelaCliente(cliente);
+					}catch(Exception e) {
+						showDialogo("Erro ao tentar converter porta");
+					}
+				}
+				
 			}
 		});
 		btnReceberLista.setBounds(540, 59, 100, 23);
 		contentPane.add(btnReceberLista);
+		
+		CaminhoServidor = new JComboBox();
+		CaminhoServidor.setEditable(true);
+		CaminhoServidor.setBounds(10, 50, 511, 32);
+		contentPane.add(CaminhoServidor);
 		servidor = new Servidor(1000 + new Random().nextInt(8999), this);
 		this.setTitle("TRANSFER");
 		dialogo = new JOptionPane();
+		CaminhoServidor.setSelectedItem("");
 	}
 
 	public void SetPortaIP(String ip, int porta) {
@@ -210,7 +220,7 @@ public class Janela1 extends JFrame {
 	}
 
 	public String caminhoServidor() {
-		String caminho = CaminhoServidor.getText();
+		String caminho = this.CaminhoServidor.getSelectedItem().toString();
 		// CaminhoServidor.setText("");
 		return caminho;
 
@@ -222,8 +232,8 @@ public class Janela1 extends JFrame {
 		return caminho;
 	}
 
-	public int portaDestino() {
-		return Integer.parseInt(portaDestino.getText());
+	public String portaDestino() {
+		return portaDestino.getText();
 	}
 
 	public void setServidor(Servidor servidor) {
@@ -244,5 +254,11 @@ public class Janela1 extends JFrame {
 
 	public void setPasta() {
 		pastaLabel.setText("Pasta Compartilhada: " + pastaCompartilhadaCaminho);
+	}
+	public void setLista(String [] array) {
+		this.CaminhoServidor.removeAllItems();
+		for(int i = 0;i<array.length;i++) {
+			this.CaminhoServidor.addItem(array[i]);
+		}
 	}
 }
