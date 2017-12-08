@@ -197,7 +197,7 @@ public class Janela1 extends JFrame {
 				
 			}
 		});
-		btnReceberLista.setBounds(540, 59, 100, 23);
+		btnReceberLista.setBounds(531, 55, 133, 23);
 		contentPane.add(btnReceberLista);
 		
 		CaminhoServidor = new JComboBox();

@@ -79,7 +79,7 @@ public class JanelaDownload extends JFrame {
 						}
 					}.start();
 					pausar.setText("Continuar");
-					
+				
 				}else {
 					continuar();
 					new Thread() {
