@@ -20,7 +20,6 @@ public class ServidorUpload {
 			BufferedInputStream bis;
 			OutputStream os;
 			try {
-				mensagens.setSoTimeout(10000);
 				dados.setSoTimeout(10000);
 				upload.setVisible(true);
 				upload.upload();
@@ -61,48 +60,7 @@ public class ServidorUpload {
 							stop();
 						} 
 					};
-					Thread RTT = new Thread() {
-						public void run() {
-							while(enviar.isAlive()) {
-								try {
-									DataOutputStream dosMensagens = new DataOutputStream(mensagens.getOutputStream());
-									dosMensagens.writeUTF("PING");
-									long tempo = System.nanoTime();
-									while(!pong) {
-										yield();
-									}
-									long tempo2 = System.nanoTime();
-									upload.setRTT(((double)(tempo2  - tempo))/1000000);
-									pong = false;
-									System.out.println("Servidor RODOU PING");
-									sleep(100);
-								}catch(Exception e) {
-									System.out.println(e);
-								}
-							}
-							stop();
-						}
-					};
-					Thread TrataMensagens = new Thread() {
-						public void run() {
-							try {
-								while(enviar.isAlive()) {
-									String mensagem = new DataInputStream(mensagens.getInputStream()).readUTF();
-									if(mensagem.equals("PING")) {
-										new DataOutputStream(mensagens.getOutputStream()).writeUTF("PONG");
-									}else {
-										pong = true;
-									}
-								}
-								stop();
-							}catch(Exception e) {
-								
-							}
-						}
-					};
 					velocidade.start();
-					TrataMensagens.start();
-					RTT.start();
 					while(atual!=tamanho) {
 						if((tamanho-atual)>=tamanhoBuffer) {
 							atual+=tamanhoBuffer;
@@ -130,8 +88,7 @@ public class ServidorUpload {
 			}
 		}
 	};
-		public ServidorUpload(Socket dados, Socket mensagens) {
-		this.mensagens = mensagens;
+		public ServidorUpload(Socket dados) {
 		this.dados = dados;
 		upload.setUpload(this);
 		conectar();

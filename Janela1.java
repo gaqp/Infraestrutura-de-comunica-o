@@ -83,7 +83,7 @@ public class Janela1 extends JFrame {
 
 		CaminhoServidor = new JTextField();
 		CaminhoServidor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		CaminhoServidor.setBounds(10, 50, 644, 38);
+		CaminhoServidor.setBounds(10, 50, 511, 38);
 		contentPane.add(CaminhoServidor);
 		CaminhoServidor.setColumns(10);
 
@@ -112,7 +112,7 @@ public class Janela1 extends JFrame {
 				} else {
 					try {
 						Paths.get(CaminhoSalvar.getText());
-						Cliente cliente = new Cliente(ipDestino(), portaDestino(), caminhoServidor(), caminhoSalvar());
+						Cliente cliente = new Cliente(ipDestino(), portaDestino(), caminhoServidor(), caminhoSalvar(),1);
 						setJanelaCliente(cliente);
 					} catch (IllegalArgumentException e) {
 						showDialogo("Erro" + e);
@@ -186,6 +186,15 @@ public class Janela1 extends JFrame {
 		pastaLabel = new JLabel("Pasta Compartilhada: ");
 		pastaLabel.setBounds(10, 301, 511, 14);
 		contentPane.add(pastaLabel);
+		
+		JButton btnReceberLista = new JButton("Receber lista");
+		btnReceberLista.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Cliente cliente = new Cliente(ipDestino(), portaDestino(), caminhoServidor(), caminhoSalvar(),0);
+			}
+		});
+		btnReceberLista.setBounds(540, 59, 100, 23);
+		contentPane.add(btnReceberLista);
 		servidor = new Servidor(1000 + new Random().nextInt(8999), this);
 		this.setTitle("TRANSFER");
 		dialogo = new JOptionPane();

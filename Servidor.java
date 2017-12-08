@@ -1,3 +1,4 @@
+import java.io.DataInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,8 +18,11 @@ public class Servidor {
 							while (true) {
 								try {
 									Socket socket = servidor.accept();
-									Socket mensagens = servidor.accept();
-									cliente(socket, mensagens);
+									if(new DataInputStream(socket.getInputStream()).readInt()==1) {
+										cliente(socket);
+									}else {
+										System.out.println("arquivos solicitados");
+									}
 								} catch (Exception e) {
 									System.out.println("Erro ao conectar cliente: " + e);
 								}
@@ -30,8 +34,8 @@ public class Servidor {
 			System.out.println("Erro no construtor do servidor: " + e);
 		}
 	}
-	private  void cliente(Socket socket, Socket mensagens) {
-				new ServidorUpload(socket,mensagens);
+	private  void cliente(Socket socket) {
+				new ServidorUpload(socket);
 	}
 	public int getPorta() {
 		return servidor.getLocalPort();
