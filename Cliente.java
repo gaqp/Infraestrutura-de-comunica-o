@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.DatagramPacket;
 
 public class Cliente {
 	volatile String host;
@@ -91,7 +94,6 @@ public class Cliente {
 						bos.flush();
 						download.setProgresso((int)(((double)offset/(double)tamanho)*100));
 					}
-					System.out.println(offset);
 					fos.close();
 					if(this.isInterrupted()) {
 					}else {
@@ -163,7 +165,7 @@ public class Cliente {
 		}
 	}
 	public void continuar() {
-	baixar.interrupt();
+	baixar.stop();
 	baixar = new Thread(){
 		public void run() {
 			try {
