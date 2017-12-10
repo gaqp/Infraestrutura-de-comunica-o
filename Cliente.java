@@ -63,10 +63,13 @@ public class Cliente {
 					String nomeArquivo = disDados.readUTF();
 					download.setNomeArquivo(nomeArquivo);
 					String barra =  "\\";
+					String caminhoOriginal = caminhoSalvar;
 					caminhoSalvar += barra+nomeArquivo;
 					System.out.println(caminhoSalvar);
-					if(new File(caminhoSalvar).exists()) {
-						new File(caminhoSalvar).delete();
+					int i = 0;
+					while(new File(caminhoSalvar).exists()) {
+						caminhoSalvar = caminhoOriginal+barra+i+nomeArquivo;
+						i++;
 					}
 					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
