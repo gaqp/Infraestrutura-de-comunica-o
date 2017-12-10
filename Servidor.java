@@ -66,9 +66,7 @@ public class Servidor {
 								bufferResposta = ("2").getBytes();
 								while(cliente.isAlive()) {
 									DatagramPacket pacoteRecebido = new DatagramPacket(buffer,buffer.length);
-									System.out.println("Servidor: Aguardado pacote, porta servidor é: "+servidorUDP.getLocalPort());
 									servidorUDP.receive(pacoteRecebido);
-									System.out.println("Servidor: Pacote Recebido");
 									InetAddress ipCliente = pacoteRecebido.getAddress();
 									int portaCliente = pacoteRecebido.getPort();
 									DatagramPacket enviarPacote = new DatagramPacket(bufferResposta,bufferResposta.length,ipCliente,portaCliente);

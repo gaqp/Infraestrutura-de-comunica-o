@@ -47,7 +47,8 @@ public class ServidorUpload {
 					bis = new BufferedInputStream(fis);
 					os = dados.getOutputStream();
 					atual = offset;
-					
+					System.out.println("Enviando nome do arquivo");
+					dosDados.writeUTF(new File(caminho).getName());
 					upload.setNomeArquivo(new File(caminho).getName());
 					Thread velocidade = new Thread() {
 						public void run() {

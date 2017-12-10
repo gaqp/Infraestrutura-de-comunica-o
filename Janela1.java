@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JFileChooser;
 import java.awt.Choice;
 import javax.swing.JComboBox;
+import java.awt.Label;
 
 public class Janela1 extends JFrame {
 
@@ -26,13 +27,13 @@ public class Janela1 extends JFrame {
 	private JLabel Porta;
 	private JTextField portaDestino;
 	private JTextField ipDestino;
-	private JTextField CaminhoSalvar;
 	private Servidor servidor;
 	private Janela1 janela;
 	public JOptionPane dialogo;
 	private JLabel pastaLabel;
 	public String pastaCompartilhadaCaminho = "";
 	private JComboBox CaminhoServidor;
+	private Label CaminhoSalvar;
 	/**
 	 * Launch the application.
 	 */
@@ -87,16 +88,10 @@ public class Janela1 extends JFrame {
 		lblDigiteOCaminho.setBounds(10, 11, 501, 28);
 		contentPane.add(lblDigiteOCaminho);
 
-		JLabel lblDigiteOCaminho_1 = new JLabel("Digite o caminho para salvar o arquivo ou procure o caminho");
+		JLabel lblDigiteOCaminho_1 = new JLabel("Procure o caminho para salvar");
 		lblDigiteOCaminho_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblDigiteOCaminho_1.setBounds(10, 165, 448, 38);
 		contentPane.add(lblDigiteOCaminho_1);
-
-		CaminhoSalvar = new JTextField();
-		CaminhoSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		CaminhoSalvar.setBounds(10, 202, 511, 38);
-		contentPane.add(CaminhoSalvar);
-		CaminhoSalvar.setColumns(10);
 
 		JButton Baixar = new JButton("Baixar");
 		Baixar.addActionListener(new ActionListener() {
@@ -149,7 +144,7 @@ public class Janela1 extends JFrame {
 		btnProcurar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser seletor = new JFileChooser();
-				seletor.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				seletor.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int retorno = seletor.showSaveDialog(seletor);
 				if (retorno == JFileChooser.APPROVE_OPTION) {
 					String caminho = seletor.getSelectedFile().getPath();
@@ -217,6 +212,16 @@ public class Janela1 extends JFrame {
 		this.setTitle("TRANSFER");
 		dialogo = new JOptionPane();
 		CaminhoServidor.setSelectedItem("");
+		
+		CaminhoSalvar = new Label("");
+		CaminhoSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		CaminhoSalvar.setBounds(101, 209, 433, 22);
+		contentPane.add(CaminhoSalvar);
+		
+		Label label = new Label("Salvar em: ");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		label.setBounds(20, 209, 109, 23);
+		contentPane.add(label);
 	}
 
 	public void SetPortaIP(String ip, int porta) {

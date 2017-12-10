@@ -60,11 +60,18 @@ public class Cliente {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
 					dosDados.writeInt(janela.getPortaUDP());
+					String nomeArquivo = disDados.readUTF();
+					download.setNomeArquivo(nomeArquivo);
+					String barra =  "\\";
+					caminhoSalvar += barra+nomeArquivo;
+					System.out.println(caminhoSalvar);
+					if(new File(caminhoSalvar).exists()) {
+						new File(caminhoSalvar).delete();
+					}
 					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
 					byte[] buffer = new byte [1024];
 					int byteLido;
-					download.setNomeArquivo(new File(caminhoSalvar).getName());
 					Thread velocidade = new Thread() {
 						public void run() {
 							while(baixar.isAlive()) {
@@ -158,21 +165,15 @@ public class Cliente {
 			download.setCliente(this);
 			this.caminho = caminho;
 			this.caminhoSalvar = caminhoSalvar;
-			if(new File(caminhoSalvar).exists()) {
-				new File(caminhoSalvar).delete();
-				if(new File(caminhoSalvar).exists()) {
-					try {
-						dados.close();
-					} catch (Exception e) {
-						
-					}
-					return;
-				}
-				}
-			download  = new JanelaDownload();
-			download.setCliente(this);
-			download.setVisible(true);
-			baixar.start();
+			if(!new File(caminhoSalvar).isDirectory()) {
+				
+			}else {
+				download  = new JanelaDownload();
+				download.setCliente(this);
+				download.setVisible(true);
+				baixar.start();
+			}
+			
 		}else {
 			new Thread() {
 				public void run() {
@@ -250,11 +251,13 @@ public class Cliente {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
 					dosDados.writeInt(janela.getPortaUDP());
+					String nomeArquivo = disDados.readUTF();
+					download.setNomeArquivo(nomeArquivo);
+					System.out.println(caminhoSalvar);
 					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
 					byte[] buffer = new byte [1024];
 					int byteLido;
-					download.setNomeArquivo(new File(caminhoSalvar).getName());
 					Thread velocidade = new Thread() {
 						public void run() {
 							while(baixar.isAlive()) {
