@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
 import javax.swing.JFileChooser;
@@ -100,18 +101,26 @@ public class Janela1 extends JFrame {
 		JButton Baixar = new JButton("Baixar");
 		Baixar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 				if (caminhoSalvar().equals("") || caminhoSalvar().equals(null) || caminhoServidor().equals(null)
 						|| caminhoServidor().equals("")) {
 					showDialogo("O caminho não pode ser vazio");
-				} else {
-					try {
-						Paths.get(CaminhoSalvar.getText());
-						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),1);
-						setJanelaCliente(cliente);
-					} catch (IllegalArgumentException e) {
-						showDialogo("Erro" + e);
-					}
+				} try {
+					if(new File(caminhoServidor()).createNewFile()) {
+						showDialogo("O caminho não pode ser uma pasta");
+					}else {
+						try {
+							Paths.get(CaminhoSalvar.getText());
+							Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),1);
+							setJanelaCliente(cliente);
+						} catch (IllegalArgumentException e) {
+							showDialogo("Erro" + e);
+						}
 
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		});

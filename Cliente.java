@@ -54,6 +54,7 @@ public class Cliente {
 				if(disDados.readInt()==0) {
 					janela.showDialogo("Arquivo não encontrado");
 					download.dispose();
+					dados.close();
 					this.stop();
 				}else {
 					long tamanho = disDados.readLong();
@@ -159,6 +160,14 @@ public class Cliente {
 			this.caminhoSalvar = caminhoSalvar;
 			if(new File(caminhoSalvar).exists()) {
 				new File(caminhoSalvar).delete();
+				if(new File(caminhoSalvar).exists()) {
+					try {
+						dados.close();
+					} catch (Exception e) {
+						
+					}
+					return;
+				}
 				}
 			download  = new JanelaDownload();
 			download.setCliente(this);
