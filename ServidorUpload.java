@@ -30,7 +30,7 @@ public class ServidorUpload {
 				dosDados = new DataOutputStream (dados.getOutputStream());
 				disDados = new DataInputStream (dados.getInputStream());
 				String caminho = disDados.readUTF();
-				if(!new File(caminho).exists()) {
+				if(!new File(caminho).exists()||new File(caminho).isDirectory()) {
 					dosDados.writeInt(0);
 					upload.dispose();
 					this.stop();
