@@ -103,9 +103,19 @@ public class Cliente {
 										long as = System.nanoTime();
 										serverSocket.send(enviaPacote);
 										DatagramPacket recebePacote = new DatagramPacket(recebe,recebe.length);
-										serverSocket.receive(recebePacote);
-										download.setRTT(((double)System.nanoTime() - as)/1000000);
-										sleep(500);
+										serverSocket.setSoTimeout(2000);
+										boolean timeout;
+										try {
+											timeout =false;
+											serverSocket.receive(recebePacote);
+										}catch(Exception e) {
+											timeout = true;
+											System.out.println("Timeout ping");
+										}
+										if(!timeout) {
+											download.setRTT(((double)System.nanoTime() - as)/1000000);
+											sleep(500);
+										}	
 									}
 									}catch(Exception e){
 										System.out.println(e);
@@ -275,9 +285,19 @@ public class Cliente {
 										long as = System.nanoTime();
 										serverSocket.send(enviaPacote);
 										DatagramPacket recebePacote = new DatagramPacket(recebe,recebe.length);
-										serverSocket.receive(recebePacote);
-										download.setRTT((double)(System.nanoTime() - as)/1000000);
-										sleep(500);
+										serverSocket.setSoTimeout(2000);
+										boolean timeout;
+										try {
+											timeout =false;
+											serverSocket.receive(recebePacote);
+										}catch(Exception e) {
+											timeout = true;
+											System.out.println("Timeout ping");
+										}
+										if(!timeout) {
+											download.setRTT(((double)System.nanoTime() - as)/1000000);
+											sleep(500);
+										}	
 									}
 									}catch(Exception e){
 										System.out.println(e);
