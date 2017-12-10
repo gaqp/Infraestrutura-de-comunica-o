@@ -12,7 +12,6 @@ import java.net.InetAddress;
 import java.util.Random;
 
 public class ServidorUpload {
-	private Socket mensagens;
 	private Socket dados;
 	private volatile long atual;
 	volatile boolean pong = false;
@@ -40,6 +39,7 @@ public class ServidorUpload {
 					long tamanho = new File(caminho).length();
 					dosDados.writeLong(tamanho);
 					long offset = disDados.readLong();
+					int portaUDP = disDados.readInt();
 					byte[] buffer;
 					int tamanhoBuffer = 1024;
 					fis = new FileInputStream(caminho);
@@ -47,6 +47,7 @@ public class ServidorUpload {
 					bis = new BufferedInputStream(fis);
 					os = dados.getOutputStream();
 					atual = offset;
+					
 					upload.setNomeArquivo(new File(caminho).getName());
 					Thread velocidade = new Thread() {
 						public void run() {
@@ -59,12 +60,41 @@ public class ServidorUpload {
 								long medida2 = atual;
 								long taxa = medida2-medida;
 								upload.setRestante((int)((double)((tamanho-medida2)/(double)taxa)));
-								upload.setTaxa(taxa/1000000);
+								upload.setTaxa(taxa);
 							}
 							upload.setRestante(2147483647);
 							stop();
 						} 
 					};
+					Thread clienteRTT = new Thread() {
+						public void run() {
+							try {
+								try{
+								    DatagramSocket serverSocket = new DatagramSocket();
+									byte[] recebe = new byte [1];
+									byte[] envia = new byte  [1];
+									InetAddress ipServer =dados.getInetAddress();
+									envia = ("1").getBytes();
+									DatagramPacket enviaPacote = new DatagramPacket (envia,envia.length,ipServer,portaUDP);
+									while(enviar.isAlive()) {
+										long as = System.nanoTime();
+										serverSocket.send(enviaPacote);
+										DatagramPacket recebePacote = new DatagramPacket(recebe,recebe.length);
+										serverSocket.receive(recebePacote);
+										upload.setRTT(((double)System.nanoTime() - as)/1000000);
+										sleep(500);
+									}
+									}catch(Exception e){
+										System.out.println(e);
+									}
+								stop();
+							} catch (Exception e) {
+								System.out.println("ero no clienteRR "+ e);
+							}
+							
+						}
+					};
+					clienteRTT.start();
 					velocidade.start();
 					while(atual!=tamanho) {
 						if((tamanho-atual)>=tamanhoBuffer) {

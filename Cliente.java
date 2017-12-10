@@ -1,5 +1,6 @@
 import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -57,9 +58,10 @@ public class Cliente {
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
+					dosDados.writeInt(janela.getPortaUDP());
 					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
-					byte[] buffer = new byte [10240];
+					byte[] buffer = new byte [1024];
 					int byteLido;
 					download.setNomeArquivo(new File(caminhoSalvar).getName());
 					Thread velocidade = new Thread() {
@@ -74,7 +76,7 @@ public class Cliente {
 								long medida2 = offset;
 								long taxa = medida2-medida1;
 								download.setRestante((int)((double)((tamanho-medida2)/(double)taxa)));
-								download.setTaxa(taxa/1000000);
+								download.setTaxa(taxa);
 							}
 							download.setRestante(2147483647);
 							try {
@@ -87,6 +89,35 @@ public class Cliente {
 						}
 					};
 					velocidade.start();
+					Thread clienteRTT = new Thread() {
+						public void run() {
+							try {
+								try{
+								    DatagramSocket serverSocket = new DatagramSocket();
+									byte[] recebe = new byte [1];
+									byte[] envia = new byte  [1];
+									InetAddress ipServer = InetAddress.getByName(host);
+									envia = ("1").getBytes();
+									DatagramPacket enviaPacote = new DatagramPacket (envia,envia.length,ipServer,porta);
+									while(baixar.isAlive()) {
+										long as = System.nanoTime();
+										serverSocket.send(enviaPacote);
+										DatagramPacket recebePacote = new DatagramPacket(recebe,recebe.length);
+										serverSocket.receive(recebePacote);
+										download.setRTT(((double)System.nanoTime() - as)/1000000);
+										sleep(500);
+									}
+									}catch(Exception e){
+										System.out.println(e);
+									}
+								stop();
+							} catch (Exception e) {
+								System.out.println("ero no clienteRR "+ e);
+							}
+							
+						}
+					};
+					clienteRTT.start();
 					is = dados.getInputStream();
 					while((byteLido = is.read(buffer))!=-1&&!this.isInterrupted()) {
 						bos.write(buffer,0,byteLido);
@@ -135,8 +166,8 @@ public class Cliente {
 						}else {
 							int tamanho = entrada.readInt();
 							System.out.println("tamanho "+tamanho);
-							String [] arquivos = new String [tamanho];
-							for(int i = 1;i<tamanho;i++) {
+							String [] arquivos = new String [tamanho+1];
+							for(int i = 1;i<=tamanho;i++) {
 								arquivos[i] = entrada.readUTF();
 							}
 							janela.setLista(arquivos);
@@ -199,9 +230,10 @@ public class Cliente {
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
+					dosDados.writeInt(janela.getPortaUDP());
 					fos = new FileOutputStream(caminhoSalvar,true);
 					BufferedOutputStream bos = new BufferedOutputStream(fos);
-					byte[] buffer = new byte [10240];
+					byte[] buffer = new byte [1024];
 					int byteLido;
 					download.setNomeArquivo(new File(caminhoSalvar).getName());
 					Thread velocidade = new Thread() {
@@ -216,7 +248,7 @@ public class Cliente {
 								long medida2 = offset;
 								long taxa = medida2-medida1;
 								download.setRestante((int)((double)((tamanho-medida2)/(double)taxa)));
-								download.setTaxa(taxa/1000000);
+								download.setTaxa(taxa);
 							}
 							download.setRestante(2147483647);
 							try {
@@ -229,6 +261,35 @@ public class Cliente {
 						}
 					};
 					velocidade.start();
+					Thread clienteRTT = new Thread() {
+						public void run() {
+							try {
+								try{
+								    DatagramSocket serverSocket = new DatagramSocket();
+									byte[] recebe = new byte [1];
+									byte[] envia = new byte  [1];
+									InetAddress ipServer = InetAddress.getByName(host);
+									envia = ("1").getBytes();
+									DatagramPacket enviaPacote = new DatagramPacket (envia,envia.length,ipServer,porta);
+									while(baixar.isAlive()) {
+										long as = System.nanoTime();
+										serverSocket.send(enviaPacote);
+										DatagramPacket recebePacote = new DatagramPacket(recebe,recebe.length);
+										serverSocket.receive(recebePacote);
+										download.setRTT((double)(System.nanoTime() - as)/1000000);
+										sleep(500);
+									}
+									}catch(Exception e){
+										System.out.println(e);
+									}
+								stop();
+							} catch (Exception e) {
+								System.out.println("ero no clienteRR "+ e);
+							}
+							
+						}
+					};
+					clienteRTT.start();
 					is = dados.getInputStream();
 					while((byteLido = is.read(buffer))!=-1&&!this.isInterrupted()) {
 						bos.write(buffer,0,byteLido);
@@ -278,7 +339,9 @@ public class Cliente {
 	public void parar() {
 		baixar.interrupt();
 		try {
+			dados.close();
 			fos.close();
+			is.close();
 		} catch (IOException e) {
 			
 		}

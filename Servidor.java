@@ -2,9 +2,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class Servidor {
@@ -16,7 +19,7 @@ public class Servidor {
 			this.janela = janela;
 			janela.setServidor(this);
 			janela.SetPortaIP(InetAddress.getLocalHost().getHostAddress(), porta);
-					new Thread() {
+					Thread  cliente = new Thread() {
 						public void run() {
 							while (true) {
 								try {
@@ -52,8 +55,31 @@ public class Servidor {
 								}
 							}
 						}
-					}.start();
-
+					};
+					cliente.start();
+					Thread udpRTT = new Thread() {
+						public void run() {
+							try {
+								DatagramSocket servidorUDP = new DatagramSocket(porta);
+								byte[] buffer = new byte[1];
+								byte[] bufferResposta = new byte[1];
+								bufferResposta = ("2").getBytes();
+								while(cliente.isAlive()) {
+									DatagramPacket pacoteRecebido = new DatagramPacket(buffer,buffer.length);
+									System.out.println("Servidor: Aguardado pacote, porta servidor é: "+servidorUDP.getLocalPort());
+									servidorUDP.receive(pacoteRecebido);
+									System.out.println("Servidor: Pacote Recebido");
+									InetAddress ipCliente = pacoteRecebido.getAddress();
+									int portaCliente = pacoteRecebido.getPort();
+									DatagramPacket enviarPacote = new DatagramPacket(bufferResposta,bufferResposta.length,ipCliente,portaCliente);
+									servidorUDP.send(enviarPacote);
+								}
+							} catch (Exception e) {
+								System.out.println("Erro no servidor UDP "+e);
+							}
+						}
+					};
+					udpRTT.start();
 		} catch (Exception e) {
 			System.out.println("Erro no construtor do servidor: " + e);
 		}

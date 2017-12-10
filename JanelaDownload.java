@@ -149,7 +149,14 @@ public class JanelaDownload extends JFrame {
 		RTT.setText("RTT: "+ String.format("%.2f", ping) +" ms"); 
 	}
 	public  void setTaxa(long taxa) {
-			Taxa.setText("Taxa: "+taxa+" MBps");	
+		taxa = taxa/8;
+			if(taxa<1000) {
+				Taxa.setText("Taxa: "+taxa+" Bps");	
+			}else if(taxa<1000000) {
+				Taxa.setText("Taxa: "+taxa/1000+" KBps");	
+			}else {
+				Taxa.setText("Taxa: "+taxa/100000+" MBps");	
+			}
 	}
 	public  void setProgresso(int progresso) {
 		Progresso.setValue(progresso);

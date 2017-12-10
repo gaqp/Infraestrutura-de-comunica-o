@@ -32,7 +32,6 @@ public class Janela1 extends JFrame {
 	private JLabel pastaLabel;
 	public String pastaCompartilhadaCaminho = "";
 	private JComboBox CaminhoServidor;
-
 	/**
 	 * Launch the application.
 	 */
@@ -188,10 +187,11 @@ public class Janela1 extends JFrame {
 				if(!ipDestino().equals("")) {
 					try {
 						int teste= Integer.parseInt(portaDestino());
-						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),0);
+						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()),"nenhum", "nada",0);
 						setJanelaCliente(cliente);
 					}catch(Exception e) {
-						showDialogo("Erro ao tentar converter porta");
+						showDialogo("Erro ao tentar converter porta ");
+						e.printStackTrace();
 					}
 				}
 				
@@ -254,6 +254,9 @@ public class Janela1 extends JFrame {
 
 	public void setPasta() {
 		pastaLabel.setText("Pasta Compartilhada: " + pastaCompartilhadaCaminho);
+	}
+	public int getPortaUDP() {
+		return servidor.getPorta();
 	}
 	public void setLista(String [] array) {
 		this.CaminhoServidor.removeAllItems();
