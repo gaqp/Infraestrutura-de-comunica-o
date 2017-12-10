@@ -235,6 +235,10 @@ public class Cliente {
 					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
 					download.dispose();
 					this.stop();
+				}catch(Exception e) {
+					janela.showDialogo("Erro: "+e);
+					download.dispose();
+					this.stop();
 				}
 				dados.setSoTimeout(10000);
 				DataOutputStream dosDados;

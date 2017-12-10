@@ -97,13 +97,9 @@ public class Janela1 extends JFrame {
 		Baixar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if (caminhoSalvar().equals("") || caminhoSalvar().equals(null) || caminhoServidor().equals(null)
-						|| caminhoServidor().equals("")) {
+				if (caminhoSalvar().equals("") || caminhoSalvar().equals(null) || caminhoServidor().equals(null) || caminhoServidor().equals("")) {
 					showDialogo("O caminho não pode ser vazio");
-				} try {
-					if(new File(caminhoServidor()).createNewFile()) {
-						showDialogo("O caminho não pode ser uma pasta");
-					}else {
+				}else {
 						try {
 							Paths.get(CaminhoSalvar.getText());
 							Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),1);
@@ -113,10 +109,6 @@ public class Janela1 extends JFrame {
 						}
 
 					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 		});
 		Baixar.setBounds(273, 405, 89, 23);
