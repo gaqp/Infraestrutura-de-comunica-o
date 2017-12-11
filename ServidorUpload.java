@@ -134,6 +134,11 @@ public class ServidorUpload {
 	}
 	void parar() {
 		upload.dispose();
+		try {
+			dados.close();
+		} catch (IOException e) {
+			
+		}
 		enviar.stop();
 	}
 } 	

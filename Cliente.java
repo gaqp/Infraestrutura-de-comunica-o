@@ -236,11 +236,11 @@ public class Cliente {
 					this.stop();
 				}catch(IllegalArgumentException e) {
 					janela.showDialogo("Argumento inválido, provavelmente a porta está errada");
-					download.dispose();
+					download.trocar();
 					this.stop();
 				}catch(Exception e) {
 					janela.showDialogo("Erro: "+e);
-					download.dispose();
+					download.trocar();
 					this.stop();
 				}
 				dados.setSoTimeout(10000);
