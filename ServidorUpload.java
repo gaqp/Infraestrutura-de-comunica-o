@@ -40,6 +40,7 @@ public class ServidorUpload {
 					dosDados.writeLong(tamanho);
 					long offset = disDados.readLong();
 					int portaUDP = disDados.readInt();
+					System.out.println("A porta udp é: "+portaUDP);
 					byte[] buffer;
 					int tamanhoBuffer = 1024;
 					fis = new FileInputStream(caminho);
@@ -134,11 +135,6 @@ public class ServidorUpload {
 	}
 	void parar() {
 		upload.dispose();
-		try {
-			dados.close();
-		} catch (IOException e) {
-			
-		}
 		enviar.stop();
 	}
 } 	

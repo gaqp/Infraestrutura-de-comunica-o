@@ -34,6 +34,7 @@ public class Janela1 extends JFrame {
 	public String pastaCompartilhadaCaminho = "";
 	private JComboBox CaminhoServidor;
 	private Label CaminhoSalvar;
+	private int porta;
 	/**
 	 * Launch the application.
 	 */
@@ -102,8 +103,7 @@ public class Janela1 extends JFrame {
 				}else {
 						try {
 							Paths.get(CaminhoSalvar.getText());
-							Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),1);
-							setJanelaCliente(cliente);
+							Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()), caminhoServidor(), caminhoSalvar(),1,setJanelaCliente());
 						} catch (IllegalArgumentException e) {
 							showDialogo("Erro" + e);
 						}
@@ -183,8 +183,7 @@ public class Janela1 extends JFrame {
 				if(!ipDestino().equals("")) {
 					try {
 						int teste= Integer.parseInt(portaDestino());
-						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()),"nenhum", "nada",0);
-						setJanelaCliente(cliente);
+						Cliente cliente = new Cliente(ipDestino(), Integer.parseInt(portaDestino()),"nenhum", "nada",0,setJanelaCliente());
 					}catch(Exception e) {
 						showDialogo("Erro ao tentar converter porta ");
 						e.printStackTrace();
@@ -219,8 +218,11 @@ public class Janela1 extends JFrame {
 	public void SetPortaIP(String ip, int porta) {
 		Porta.setText(porta + "");
 		IP.setText(ip);
+		this.porta = porta;
 	}
-
+	public int getPorta() {
+		return this.porta;
+	}
 	public String ipDestino() {
 		return ipDestino.getText();
 	}
@@ -254,8 +256,8 @@ public class Janela1 extends JFrame {
 		this.dialogo.showMessageDialog(this, dialogo);
 	}
 
-	public void setJanelaCliente(Cliente cliente) {
-		cliente.setJanela(this);
+	public Janela1 setJanelaCliente() {
+		return this;
 	}
 
 	public void setPasta() {

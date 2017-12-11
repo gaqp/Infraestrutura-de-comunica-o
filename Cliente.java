@@ -59,7 +59,7 @@ public class Cliente {
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
-					dosDados.writeInt(janela.getPortaUDP());
+					dosDados.writeInt(janela.getPorta());
 					String nomeArquivo = disDados.readUTF();
 					download.setNomeArquivo(nomeArquivo);
 					String barra =  "\\";
@@ -160,7 +160,8 @@ public class Cliente {
 		}
 	};
  
-	public Cliente(String host, int porta, String caminho, String caminhoSalvar, int opcao) {
+	public Cliente(String host, int porta, String caminho, String caminhoSalvar, int opcao, Janela1 Janela) {
+		this.janela = Janela;
 		if(opcao == 1) {
 			this.host = host;
 			this.porta = porta;
@@ -257,7 +258,7 @@ public class Cliente {
 				}else {
 					long tamanho = disDados.readLong();
 					dosDados.writeLong(offset);
-					dosDados.writeInt(janela.getPortaUDP());
+					dosDados.writeInt(janela.getPorta());
 					String nomeArquivo = disDados.readUTF();
 					download.setNomeArquivo(nomeArquivo);
 					System.out.println(caminhoSalvar);
