@@ -244,6 +244,9 @@ public class Cliente {
 					download.trocar();
 					this.stop();
 				}
+				if(!new File(caminhoSalvar).exists()) {
+					offset = 0;
+				}
 				dados.setSoTimeout(10000);
 				DataOutputStream dosDados;
 				DataInputStream disDados;
